@@ -13,22 +13,16 @@ const main = async () => {
     await gameContract.deployed();
     console.log("Contract deployed to:", gameContract.address);
 
-    let txn;
-    txn = await gameContract.mintItem(0);
+    let txn = await gameContract.mintItem(2);
     await txn.wait();
-    console.log("Minted NFT #1");
 
-    txn = await gameContract.mintItem(1);
+    txn = await gameContract.healPatient();
     await txn.wait();
-    console.log("Minted NFT #2");
 
-    txn = await gameContract.mintItem(1);
+    txn = await gameContract.healPatient();
     await txn.wait();
-    console.log("Minted NFT #3");
 
-    txn = await gameContract.mintItem(2);
-    await txn.wait();
-    console.log("Minted NFT #4");
+    
 };
 
 const runMain = async () => {

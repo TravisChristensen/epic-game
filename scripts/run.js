@@ -21,6 +21,8 @@ const main = async () => {
 
     txn = await gameContract.healPatient();
     await txn.wait();
+
+    console.log(await gameContract.patient());
 };
 
 const runMain = async () => {
