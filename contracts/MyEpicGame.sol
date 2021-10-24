@@ -8,6 +8,13 @@ import "hardhat/console.sol";
 import "./libraries/Base64.sol";
 
 contract MyEpicGame is ERC721 {
+    event ItemNFTMinted(
+        address sender,
+        uint256 tokenId,
+        uint256 itemIndex
+    );
+    event TreatmentComplete(uint256 newPatientHp, uint256 newItemUses);
+
     struct ItemAttributes {
         uint256 itemIndex;
         string name;
@@ -20,7 +27,7 @@ contract MyEpicGame is ERC721 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    ItemAttributes[] defaultItems;
+    ItemAttributes[] public defaultItems;
 
     mapping(uint256 => ItemAttributes) public nftHolderAttributes;
     mapping(address => uint256) public nftHolders;
@@ -88,6 +95,18 @@ contract MyEpicGame is ERC721 {
         _tokenIds.increment();
     }
 
+    function getUserItem()
+        public
+        view
+        returns (ItemAttributes memory userItemAttributes)
+    {
+        uint256 userItemTokenId = nftHolders[msg.sender];
+
+        if (userItemTokenId > 0) {
+            userItemAttributes = nftHolderAttributes[userItemTokenId];
+        }
+    }
+
     function mintItem(uint256 _itemIndex) external {
         uint256 newItemId = _tokenIds.current();
         console.log("Token ID in blockchain: ", newItemId);
@@ -110,6 +129,8 @@ contract MyEpicGame is ERC721 {
         nftHolders[msg.sender] = newItemId;
 
         _tokenIds.increment();
+        
+        emit ItemNFTMinted(msg.sender, newItemId, _itemIndex);
     }
 
     function healPatient() public {
@@ -192,6 +213,8 @@ contract MyEpicGame is ERC721 {
             playerItem.uses,
             playerItem.maxUses
         );
+
+        emit TreatmentComplete(patient.hp, playerItem.uses);
     }
 
     function tokenURI(uint256 _tokenId)
