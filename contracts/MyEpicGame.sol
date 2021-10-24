@@ -114,10 +114,15 @@ contract MyEpicGame is ERC721 {
 
     function healPatient() public {
         uint256 playerItemTokenId = nftHolders[msg.sender];
-        
-        require(playerItemTokenId != 0, "You must have some medical equipment!");
 
-        ItemAttributes storage playerItem = nftHolderAttributes[playerItemTokenId];
+        require(
+            playerItemTokenId != 0,
+            "You must have some medical equipment!"
+        );
+
+        ItemAttributes storage playerItem = nftHolderAttributes[
+            playerItemTokenId
+        ];
 
         require(
             playerItem.uses > 0,
@@ -126,28 +131,54 @@ contract MyEpicGame is ERC721 {
 
         require(
             patient.hp < 100,
-            string(abi.encodePacked("Good job, you've already ", patient.name, "'s case of illness."))
+            string(
+                abi.encodePacked(
+                    "Good job, you've already ",
+                    patient.name,
+                    "'s case of illness."
+                )
+            )
         );
 
         require(
             patient.hp != 0,
-            string(abi.encodePacked("Oh dear, you didn't save ", patient.name, "!"))
+            string(
+                abi.encodePacked("Oh dear, you didn't save ", patient.name, "!")
+            )
         );
 
-        console.log("Player is about to use their %s on the patient. Healing Power: %s", playerItem.name, playerItem.power);
+        console.log(
+            "Player is about to use their %s on the patient. Healing Power: %s",
+            playerItem.name,
+            playerItem.power
+        );
         uint256 newHp = patient.hp;
-        console.log("The %s heals %s by %s hp!", playerItem.name, patient.name, playerItem.power);
+        console.log(
+            "The %s heals %s by %s hp!",
+            playerItem.name,
+            patient.name,
+            playerItem.power
+        );
         newHp = newHp + playerItem.power;
         if (newHp < patient.illnessDamage) {
             newHp = 0;
             console.log("%s didn't make it.", patient.name);
         } else {
             newHp = newHp - patient.illnessDamage;
-            console.log("%s's illness damaged them by %s hp!", patient.name, patient.illnessDamage);
+            console.log(
+                "%s's illness damaged them by %s hp!",
+                patient.name,
+                patient.illnessDamage
+            );
         }
         patient.hp = newHp;
 
-        console.log("%s's health is now %s/%s", patient.name, patient.hp, patient.maxHp);
+        console.log(
+            "%s's health is now %s/%s",
+            patient.name,
+            patient.hp,
+            patient.maxHp
+        );
 
         if (playerItem.uses == 1) {
             playerItem.uses = 0;
@@ -155,7 +186,12 @@ contract MyEpicGame is ERC721 {
             playerItem.uses = playerItem.uses - 1;
         }
 
-        console.log ("%s uses Left: %s/%s", playerItem.name, playerItem.uses, playerItem.maxUses);  
+        console.log(
+            "%s uses Left: %s/%s",
+            playerItem.name,
+            playerItem.uses,
+            playerItem.maxUses
+        );
     }
 
     function tokenURI(uint256 _tokenId)
